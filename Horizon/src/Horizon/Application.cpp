@@ -11,6 +11,8 @@
 
 #include "Input.h"
 
+#include "Horizon/Renderer/Renderer.h"
+
 #include <glfw/glfw3.h>
 
 
@@ -28,6 +30,8 @@ namespace Horizon {
 
 		m_Window = Scope<Window>(Window::Create());
 		m_Window->SetEventCallBack(BIND_EVENT_FN(Application::OnEvent));
+
+		Renderer::Init();
 
 		m_ImGuiLayer = new ImGuiLayer;
 		PushOverlay(m_ImGuiLayer);

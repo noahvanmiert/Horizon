@@ -175,6 +175,7 @@ public:
 		m_TextureShader.reset(Horizon::Shader::Create(textureShadervertexSrc, textureShaderfragmentSrc));
 
 		m_Texture = Horizon::Texture2D::Create("C:/dev/Horizon/Sandbox/src/assets/textures/Checkerboard.png");
+		m_ChernoLogo = Horizon::Texture2D::Create("C:/dev/Horizon/Sandbox/src/assets/textures/Chernologo.png");
 
 		std::dynamic_pointer_cast<Horizon::OpenGLShader>(m_TextureShader)->Bind();
 		std::dynamic_pointer_cast<Horizon::OpenGLShader>(m_TextureShader)->UploadUniformInt("u_Texture", 0);
@@ -229,6 +230,9 @@ public:
 		 
 		m_Texture->Bind();
 		Renderer::Submit(m_TextureShader, m_SquareVA, glm::scale(glm::mat4(1.0f), glm::vec3(1.5f)));
+		
+		m_ChernoLogo->Bind();
+		Renderer::Submit(m_TextureShader, m_SquareVA, glm::scale(glm::mat4(1.0f), glm::vec3(1.5f)));
 
 		// Renderer::Submit(m_Shader, m_VertexArray);
 
@@ -258,6 +262,7 @@ private:
 	Horizon::Ref<Horizon::VertexArray> m_SquareVA;
 
 	Horizon::Ref<Horizon::Texture2D> m_Texture;
+	Horizon::Ref<Horizon::Texture2D> m_ChernoLogo;
 
 	glm::vec4 m_BlockColor1;
 	glm::vec4 m_BlockColor2;
