@@ -25,6 +25,7 @@
 #include "Horizon/Renderer/Renderer.h"
 #include "Horizon/Renderer/Buffer.h"
 #include "Horizon/Renderer/Shader.h"
+#include "Horizon/Renderer/Texture.h"
 #include "Horizon/Renderer/VertexArray.h"
 #include "Horizon/Renderer/OrthographicCamera.h"
 

@@ -45,11 +45,11 @@ public:
 
 		m_SquareVA.reset(Horizon::VertexArray::Create());
 
-		float vertices2[3 * 4] = {
-			-0.5f, -0.5f, 0.0f,
-			 0.5f, -0.5f, 0.0f,
-			 0.5f,  0.5f, 0.0f,
-			-0.5f,  0.5f, 0.0f
+		float vertices2[5 * 4] = {
+			-0.5f, -0.5f, 0.0f, 0.0f, 0.0f,
+			 0.5f, -0.5f, 0.0f, 1.0f, 0.0f,
+			 0.5f,  0.5f, 0.0f, 1.0f, 1.0f,
+			-0.5f,  0.5f, 0.0f, 0.0f, 1.0f,
 		};
 
 		Horizon::Ref<Horizon::VertexBuffer> squareVB;
@@ -57,7 +57,8 @@ public:
 
 		squareVB->SetLayout({
 			{ Horizon::ShaderDataType::Float3, "a_Position" },
-			});
+			{ Horizon::ShaderDataType::Float2, "a_TexCoord"}
+		});
 
 		m_SquareVA->AddVertexBuffer(squareVB);
 
@@ -69,7 +70,7 @@ public:
 
 		std::string vertexSrc = R"(
 			#version 330 core
-	
+			
 			layout(location = 0) in vec3 a_Position;
 			layout(location = 1) in vec4 a_Color;
 
@@ -83,13 +84,13 @@ public:
 			{
 				v_Position = a_Position;
 				v_Color = a_Color;
-				gl_Position = u_ViewProjection * u_Transform * vec4(a_Position, 1);
+				gl_Position = u_ViewProjection * u_Transform * vec4(a_Position, 1.0);	
 			}
 		)";
 
 		std::string fragmentSrc = R"(
 			#version 330 core
-	
+			
 			layout(location = 0) out vec4 color;
 
 			in vec3 v_Position;
@@ -106,7 +107,7 @@ public:
 
 		std::string vertexSrc2 = R"(
 			#version 330 core
-	
+			
 			layout(location = 0) in vec3 a_Position;
 
 			uniform mat4 u_ViewProjection;
@@ -117,17 +118,17 @@ public:
 			void main()
 			{
 				v_Position = a_Position;
-				gl_Position = u_ViewProjection * u_Transform * vec4(a_Position , 1);
+				gl_Position = u_ViewProjection * u_Transform * vec4(a_Position, 1.0);	
 			}
 		)";
 
 		std::string fragmentSrc2 = R"(
 			#version 330 core
-	
+			
 			layout(location = 0) out vec4 color;
 
 			in vec3 v_Position;
-
+			
 			uniform vec3 u_Color;
 
 			void main()
@@ -137,6 +138,46 @@ public:
 		)";
 
 		m_Shader2.reset(Horizon::Shader::Create(vertexSrc2, fragmentSrc2));
+
+		std::string textureShadervertexSrc = R"(
+			#version 330 core
+			
+			layout(location = 0) in vec3 a_Position;
+			layout(location = 1) in vec2 a_TexCoord;
+
+			uniform mat4 u_ViewProjection;
+			uniform mat4 u_Transform;
+
+			out vec2 v_TexCoord;
+
+			void main()
+			{
+				v_TexCoord = a_TexCoord;
+				gl_Position = u_ViewProjection * u_Transform * vec4(a_Position, 1.0);	
+			}
+		)";
+
+		std::string textureShaderfragmentSrc = R"(
+			#version 330 core
+			
+			layout(location = 0) out vec4 color;
+
+			in vec2 v_TexCoord;
+			
+			uniform sampler2D u_Texture;
+
+			void main()
+			{
+				color = texture(u_Texture, v_TexCoord);
+			}
+		)";
+
+		m_TextureShader.reset(Horizon::Shader::Create(textureShadervertexSrc, textureShaderfragmentSrc));
+
+		m_Texture = Horizon::Texture2D::Create("C:/dev/Horizon/Sandbox/src/assets/textures/Checkerboard.png");
+
+		std::dynamic_pointer_cast<Horizon::OpenGLShader>(m_TextureShader)->Bind();
+		std::dynamic_pointer_cast<Horizon::OpenGLShader>(m_TextureShader)->UploadUniformInt("u_Texture", 0);
 	}
 
 
@@ -186,7 +227,10 @@ public:
 			}
 		}
 		 
-		Renderer::Submit(m_Shader, m_VertexArray);
+		m_Texture->Bind();
+		Renderer::Submit(m_TextureShader, m_SquareVA, glm::scale(glm::mat4(1.0f), glm::vec3(1.5f)));
+
+		// Renderer::Submit(m_Shader, m_VertexArray);
 
 		Renderer::EndScene();
 	}
@@ -210,8 +254,10 @@ private:
 	Horizon::Ref<Horizon::Shader> m_Shader;
 	Horizon::Ref<Horizon::VertexArray> m_VertexArray;
 
-	Horizon::Ref<Horizon::Shader> m_Shader2;
+	Horizon::Ref<Horizon::Shader> m_Shader2, m_TextureShader;
 	Horizon::Ref<Horizon::VertexArray> m_SquareVA;
+
+	Horizon::Ref<Horizon::Texture2D> m_Texture;
 
 	glm::vec4 m_BlockColor1;
 	glm::vec4 m_BlockColor2;

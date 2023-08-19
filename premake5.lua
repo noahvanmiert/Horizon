@@ -19,6 +19,7 @@ IncludeDir["GLFW"] = "Horizon/vendor/GLFW/include"
 IncludeDir["Glad"] = "Horizon/vendor/Glad/include"
 IncludeDir["ImGui"] = "Horizon/vendor/imgui"
 IncludeDir["glm"] = "Horizon/vendor/glm"
+IncludeDir["stb_image"] = "Horizon/vendor/stb_image"
 
 group "Dependencies"
 	include "Horizon/vendor/GLFW"
@@ -44,6 +45,8 @@ project "Horizon"
 	{
 		"%{prj.name}/src/**.h",
 		"%{prj.name}/src/**.cpp",
+		"%{prj.name}/vendor/stb_image/**.h",
+		"%{prj.name}/vendor/stb_image/**.cpp",
 		"%{prj.name}/vendor/glm/glm/**.hpp",
 		"%{prj.name}/vendor/glm/glm/**.inl",
 	}
@@ -60,7 +63,8 @@ project "Horizon"
 		"%{IncludeDir.GLFW}",
 		"%{IncludeDir.Glad}",
 		"%{IncludeDir.ImGui}",
-		"%{IncludeDir.glm}"
+		"%{IncludeDir.glm}",
+		"%{IncludeDir.stb_image}"
 	}
 
 	links
