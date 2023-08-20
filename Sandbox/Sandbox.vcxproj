@@ -144,6 +144,9 @@
   <ItemGroup>
     <Image Include="src\assets\Pink.png" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="src\assets\shaders\Texture.glsl" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
